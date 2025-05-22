@@ -1,54 +1,117 @@
-# React + TypeScript + Vite
+# Quiz Learning Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern web application for creating and taking quizzes, designed to help students practice and test their knowledge through multiple-choice questions.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Create quiz sets with custom names
+- Upload quiz questions via JAR files
+- Interactive quiz interface with immediate feedback
+- Score calculation and result display
+- Responsive design using Tailwind CSS
+- Real-time answer validation
+- Progress tracking during quiz
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Frontend:**
+  - React with TypeScript
+  - Tailwind CSS for styling
+  - React Router for navigation
+  - Axios for API calls
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- **Backend:**
+  - Node.js with Express
+  - MySQL database
+  - Multer for file uploads
+
+## Prerequisites
+
+- Node.js (v14 or higher)
+- MySQL Server
+- npm or yarn package manager
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd quiz-website
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+2. Install frontend dependencies:
+```bash
+npm install
 ```
+
+3. Install backend dependencies:
+```bash
+cd server
+npm install
+```
+
+4. Create a MySQL database named 'quizz'
+
+5. Create a `.env` file in the server directory with the following content:
+```
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=123456
+DB_NAME=quizz
+PORT=3001
+```
+
+## Running the Application
+
+1. Start the backend server:
+```bash
+cd server
+npm run dev
+```
+
+2. In a new terminal, start the frontend development server:
+```bash
+npm run dev
+```
+
+3. Open your browser and navigate to `http://localhost:5173`
+
+## Usage
+
+1. **Creating a Quiz:**
+   - Click "Create New Quiz" on the home page
+   - Enter a name for your quiz set
+   - Upload a JAR file containing quiz questions
+   - Click "Create Quiz" to proceed
+
+2. **Taking a Quiz:**
+   - Select an answer from the multiple-choice options
+   - Get immediate feedback on your answer
+   - View the correct answer if you answered incorrectly
+   - Click "Next Question" to proceed
+   - View your final score and results at the end
+
+## Project Structure
+
+```
+quiz-website/
+├── src/
+│   ├── pages/
+│   │   ├── Home.tsx
+│   │   ├── Quiz.tsx
+│   │   └── Result.tsx
+│   ├── App.tsx
+│   └── main.tsx
+├── server/
+│   ├── index.js
+│   └── uploads/
+└── public/
+```
+
+## Contributing
+
+Feel free to submit issues and enhancement requests!
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
