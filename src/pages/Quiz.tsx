@@ -1,8 +1,6 @@
-// src/pages/Quiz.tsx
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './Quiz.css'; // We'll create this CSS file
 
 type Answer = {
   id: number;
@@ -30,12 +28,11 @@ export default function Quiz() {
 
   useEffect(() => {
     axios
-      .get<Question[]>(
-        `http://localhost:3001/api/quizzes/${quizId}/questions`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-      .then((res) => setQuestions(res.data))
-      .catch((err) => {
+      .get<Question[]>(`http://localhost:3001/api/quizzes/${quizId}/questions`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(res => setQuestions(res.data))
+      .catch(err => {
         console.error(err);
         alert('Không lấy được câu hỏi.');
       })
@@ -47,8 +44,8 @@ export default function Quiz() {
     setSelectedAnswer(ans);
 
     if (ans.is_correct) {
-      setScore((s) => s + 1);
-      setTimeout(nextQuestion, 1000);
+      setScore(s => s + 1);
+      setTimeout(nextQuestion, 800);
     } else {
       setShowCorrect(true);
     }
@@ -58,11 +55,9 @@ export default function Quiz() {
     setSelectedAnswer(null);
     setShowCorrect(false);
     if (currentIndex + 1 < questions.length) {
-      setCurrentIndex((i) => i + 1);
+      setCurrentIndex(i => i + 1);
     } else {
-      // tính điểm trên thang 10
       const grade = (score / questions.length) * 10;
-      // lưu attempt
       axios
         .post(
           `http://localhost:3001/api/quizzes/${quizId}/attempts`,
@@ -77,42 +72,65 @@ export default function Quiz() {
     }
   };
 
-  if (loading) return <div className="loading-message">Đang tải...</div>;
-  if (!questions.length) return <div className="empty-message">Chưa có câu hỏi.</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        Đang tải...
+      </div>
+    );
+  }
+  if (!questions.length) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        Chưa có câu hỏi.
+      </div>
+    );
+  }
 
   const q = questions[currentIndex];
   return (
-    <div className="quiz-container">
-      <div className="quiz-card">
-        <h2 className="question-counter">
-          Câu {currentIndex + 1} / {questions.length}
-        </h2>
-        <p className="question-content">{q.content}</p>
-        <div className="answers-container">
-          {q.answers.map((ans) => {
-            let answerClass = 'answer-button';
+    <div className="min-h-screen bg-white flex items-center justify-center p-6">
+      <div className="bg-white rounded-2xl shadow-lg w-full max-w-xl p-8 space-y-6">
+        <div className="flex justify-between">
+          <span className="text-black">
+            Câu {currentIndex + 1} / {questions.length}
+          </span>
+          <span className="font-semibold text-gray-800">Score: {score}</span>
+        </div>
+
+        <h2 className="text-xl font-semibold text-gray-800">{q.content}</h2>
+
+        <div className="grid gap-4 bg-white">
+          {q.answers.map(ans => {
+            const base =
+              'p-4 border rounded-lg bg-white font-medium transition cursor-pointer';
+            let style = base + ' hover:bg-gray-100';
             if (selectedAnswer?.id === ans.id) {
-              answerClass = ans.is_correct ? 'answer-button correct' : 'answer-button incorrect';
+              style = ans.is_correct
+                ? base + ' border-green-500 bg-green-100'
+                : base + ' border-red-500 bg-red-100';
             }
-            if (showCorrect && ans.is_correct) answerClass = 'answer-button correct';
-            
+            if (showCorrect && ans.is_correct) {
+              style = base + ' border-green-500 bg-green-100';
+            }
             return (
               <button
                 key={ans.id}
                 onClick={() => handleAnswer(ans)}
                 disabled={!!selectedAnswer}
-                className={answerClass}
+                className={style}
               >
                 {ans.content}
               </button>
             );
           })}
         </div>
+
         {showCorrect && (
-          <div className="next-button-container">
+          <div className="text-right">
             <button
               onClick={nextQuestion}
-              className="next-button"
+              className="px-5 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
             >
               Câu kế tiếp
             </button>

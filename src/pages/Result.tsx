@@ -1,7 +1,5 @@
-// src/pages/Result.tsx
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import './Result.css';
 
 type State = {
   score: number;
@@ -21,19 +19,24 @@ export default function Result() {
   }, [score, navigate]);
 
   return (
-    <div className="result-container">
-      <div className="result-card">
-        <h2 className="result-title">Kết quả</h2>
-        <p className="result-score">
-          Bạn làm đúng <span className="highlight">{score}</span> /{' '}
-          <span className="highlight">{totalQuestions}</span> câu
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+      <div className="bg-white p-8 rounded-2xl shadow-lg max-w-sm text-center space-y-6">
+        <h2 className="text-2xl font-semibold text-gray-800">Kết quả</h2>
+        <p className="text-gray-700">
+          Bạn làm đúng{' '}
+          <span className="font-bold text-blue-600">{score}</span> /{' '}
+          {totalQuestions} câu
         </p>
-        <p className="result-grade">
-          Điểm: <span className="highlight">{grade.toFixed(1)}</span> / 10
+        <p className="text-gray-700">
+          Điểm:{' '}
+          <span className="font-bold text-green-600">
+            {grade.toFixed(1)}
+          </span>{' '}
+          / 10
         </p>
         <button
           onClick={() => navigate('/dashboard')}
-          className="dashboard-button"
+          className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
         >
           Về Dashboard
         </button>

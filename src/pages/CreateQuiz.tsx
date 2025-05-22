@@ -1,8 +1,6 @@
-// src/pages/CreateQuiz.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
-import './CreateQuiz.css';
 
 export default function CreateQuiz() {
   const [title, setTitle] = useState('');
@@ -20,66 +18,74 @@ export default function CreateQuiz() {
     setIsLoading(true);
 
     try {
-      // Tạo quiz
       const { data } = await api.post<{ quizId: number }>('/quizzes', { title });
       const quizId = data.quizId;
 
-      // Nếu có file, upload thêm
       if (file) {
         const fd = new FormData();
         fd.append('jar', file);
         await api.post(`/quizzes/${quizId}/upload`, fd, {
-          headers: { 'Content-Type': 'multipart/form-data' }
+          headers: { 'Content-Type': 'multipart/form-data' },
         });
       }
 
       navigate(`/quiz/${quizId}`);
     } catch (err: any) {
       console.error(err);
-      if (err.response?.status === 401) {
-        setError('Bạn chưa đăng nhập hoặc phiên đã hết hạn');
-      } else {
-        setError('Có lỗi xảy ra khi tạo quiz');
-      }
+      setError(
+        err.response?.status === 401
+          ? 'Bạn chưa đăng nhập hoặc phiên đã hết hạn'
+          : 'Có lỗi xảy ra khi tạo quiz'
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="create-quiz-container">
-      <div className="create-quiz-card">
-        <h2 className="create-quiz-title">Create New Quiz</h2>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+      <div className="bg-white shadow-lg rounded-2xl w-full max-w-md p-8 space-y-6">
+        <h2 className="text-2xl font-semibold text-center text-gray-800">
+          Create New Quiz
+        </h2>
 
-        {error && <div className="error-msg">{error}</div>}
+        {error && (
+          <div className="text-red-600 text-sm bg-red-100 p-3 rounded-md">
+            {error}
+          </div>
+        )}
 
-        <div className="form-group">
-          <label htmlFor="quiz-title">Quiz Title</label>
-          <input
-            id="quiz-title"
-            type="text"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            placeholder="Enter quiz title"
-            disabled={isLoading}
-          />
-        </div>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-gray-700 mb-1">Quiz Title</label>
+            <input
+              type="text"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              placeholder="Enter quiz title"
+              disabled={isLoading}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="quiz-file">Upload JAR File (optional)</label>
-          <input
-            id="quiz-file"
-            type="file"
-            accept=".jar"
-            onChange={e => setFile(e.target.files?.[0] || null)}
-            disabled={isLoading}
-          />
+          <div>
+            <label className="block text-gray-700 mb-1">
+              Upload JAR File (optional)
+            </label>
+            <input
+              type="file"
+              accept=".jar"
+              onChange={e => setFile(e.target.files?.[0] || null)}
+              disabled={isLoading}
+              className="w-full"
+            />
+          </div>
         </div>
 
         <button
           onClick={handleSubmit}
-          className="submit-button"
           disabled={isLoading}
+          className="w-full bg-blue-500 text-white py-2 rounded-lg font-medium hover:bg-blue-600 disabled:opacity-50 transition"
         >
           {isLoading ? 'Creating...' : 'Submit'}
         </button>
